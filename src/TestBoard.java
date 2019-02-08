@@ -7,7 +7,9 @@ public class TestBoard extends Board {
 	}
 
 	public static void main(String[] args) {
-		Board test = new Board("test",10); 
+		Board test = new Board("test",10);
+		AbstractShip ship = new Destroyer(3);
+		test.putShip(ship,1,5);
 		test.print();
 	}
 
