@@ -92,7 +92,7 @@ public class Board implements IBoard {
 	}
 
 	@Override
-	public void putShip(AbstractShip ship, int x, int y) {
+	public int putShip(AbstractShip ship, int x, int y) {
 		int size = ship.size;
 		int orientation = ship.orientation;
 		//On doit vérifier si on peut placer le bateau sur la grille
@@ -141,9 +141,11 @@ public class Board implements IBoard {
 					}
 			}
 		}
+		return 0;
 		}
 		else {//On ne peut pas placer le bateau
 			System.out.println("On ne peut pas placer le bateau : "+ship.nom);
+			return -1;
 		}
 		
 	}

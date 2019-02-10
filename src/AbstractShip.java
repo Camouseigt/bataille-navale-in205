@@ -14,5 +14,12 @@ public class AbstractShip {
 		this.orientation = orientation;
 	}
 	
+	public String getName() {
+		return this.nom;
+	}
+	
+	public int getLength() {
+		return this.size;
+	}
 	
 }

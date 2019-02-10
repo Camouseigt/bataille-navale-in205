@@ -30,19 +30,33 @@ public class Player {
     public void putShips() {
         boolean done = false;
         int i = 0;
-
+        int info = -1;
         do {
             AbstractShip s = ships[i];
             String msg = String.format("placer %d : %s(%d)", i + 1, s.getName(), s.getLength());
             System.out.println(msg);
             InputHelper.ShipInput res = InputHelper.readShipInput();
             // TODO set ship orientation
-            // TODO put ship at given position
-
-            // TODO when ship placement successful
-            ++i;
-            done = i == 5;
-
+            if (res.orientation == "e") {
+            	s.orientation = 0;
+            }
+            if (res.orientation == "s") {
+            	s.orientation = 1;
+            }
+            if (res.orientation == "w") {
+            	s.orientation = 2;
+            }
+            if (res.orientation == "n") {
+            	s.orientation = 3;
+            }
+            
+            info = board.putShip(s, res.x, res.y);
+            if (info == 0) {//Placement du bateau réussi
+            	++i;
+            	done = i == 5;
+            }
+            
+            
             board.print();
         } while (!done);
     }

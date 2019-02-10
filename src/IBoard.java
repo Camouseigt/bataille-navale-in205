@@ -12,7 +12,7 @@ public interface IBoard {
     * @param x
     * @param y
     */
-    void putShip(AbstractShip ship, int x, int y);
+    int putShip(AbstractShip ship, int x, int y);
 
     /**
      * Get if a ship is placed at the given position
