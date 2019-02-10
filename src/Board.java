@@ -5,25 +5,26 @@ public class Board implements IBoard {
 /* Attributs */
 	
 	public String name;
-	public ArrayList<ArrayList<String>> grille;
+	public ArrayList<ArrayList<ShipState>> grille;
 	public ArrayList<ArrayList<Boolean>> tirs;
 	
 /* Constructeurs*/
 	public Board(String nom_grille, int size_grille) {
 		
 		this.name = nom_grille;
-		this.grille = new ArrayList<ArrayList<String>>();
+		this.grille = new ArrayList<ArrayList<ShipState>>();
 		this.tirs = new ArrayList<ArrayList<Boolean>>();
 		
 		for (int i = 0; i<size_grille; i++) {
 			
-			ArrayList<String> ligne_grille = new ArrayList<String>();
+			ArrayList<ShipState> ligne_grille = new ArrayList<ShipState>();
 			ArrayList<Boolean> ligne_tirs = new ArrayList<Boolean>();
 			
 			
 			for (int j = 0; j<size_grille;j++) {
-				ligne_grille.add(".");
-				ligne_tirs.add(false);
+				ShipState empty = new ShipState();
+				ligne_grille.add(empty);
+				ligne_tirs.add(null);
 			}
 			
 			grille.add(i, ligne_grille);
@@ -33,17 +34,18 @@ public class Board implements IBoard {
 	
 	public Board(String nom_grille) {
 		this.name = nom_grille;
-		this.grille = new ArrayList<ArrayList<String>>();
+		this.grille = new ArrayList<ArrayList<ShipState>>();
 		this.tirs = new ArrayList<ArrayList<Boolean>>();
 		
 		for (int i = 0; i<10; i++) {
 			
-			ArrayList<String> ligne_grille = new ArrayList<String>();
+			ArrayList<ShipState> ligne_grille = new ArrayList<ShipState>();
 			ArrayList<Boolean> ligne_tirs = new ArrayList<Boolean>();
 			
 			for (int j = 0; j<10;j++) {
-				ligne_grille.add(".");
-				ligne_tirs.add(false);
+				ShipState empty = new ShipState();//Représente une case sans bateau
+				ligne_grille.add(empty);
+				ligne_tirs.add(null);
 			}
 			
 			grille.add(ligne_grille);
@@ -62,7 +64,7 @@ public class Board implements IBoard {
 		for (int i = 0; i < grille.size(); i++) {
 			ligne = "" + (i+1) + "\t";
 			for (int j = 0; j < grille.size();j++) {	
-				ligne += grille.get(i).get(j)+ " ";
+				ligne += grille.get(i).get(j).ship.label+ " ";
 			}
 			System.out.println(ligne);	
 		}
@@ -73,11 +75,16 @@ public class Board implements IBoard {
 		for (int i = 0; i < grille.size(); i++) {
 			ligne = "" + (i+1) + " \t";
 			for (int j = 0; j < grille.size();j++) {
-				if (tirs.get(i).get(j)) {
-					ligne += "x ";
+				if (tirs.get(i).get(j)==null) {
+					ligne += ". ";
 				}
 				else {
-					ligne += ". ";
+					if(tirs.get(i).get(j)) {//Un bateau a été touché
+						ligne += ColorUtil.colorize("X ", ColorUtil.Color.RED);
+					}
+					else {
+						ligne += ColorUtil.colorize("X ", ColorUtil.Color.WHITE);
+					}
 				}
 			}
 			System.out.println(ligne);
@@ -95,6 +102,7 @@ public class Board implements IBoard {
 	public int putShip(AbstractShip ship, int x, int y) {
 		int size = ship.size;
 		int orientation = ship.orientation;
+		ShipState s = new ShipState(ship, false);//Représente le bateau à placer
 		//On doit vérifier si on peut placer le bateau sur la grille
 		boolean place = true;
 		if (orientation%2 == 0) {//On est sur une ligne
@@ -110,17 +118,17 @@ public class Board implements IBoard {
 		
 		
 		if (place) {
-		ArrayList<String> ligne = new ArrayList<String>();
+		ArrayList<ShipState> ligne = new ArrayList<ShipState>();
 		
 		if (orientation%2 == 0) {//On est sur une ligne
 			//On récupère la ligne
 			ligne = grille.get(y);
 			for (int i = 0; i<size; i++) {
 				if(orientation == 0) {
-					ligne.set(x+i, ship.label);
+					ligne.set(x+i, s);
 				}
 				else {
-					ligne.set(x-i, ship.label);
+					ligne.set(x-i, s);
 				}
 			}
 		}
@@ -131,12 +139,12 @@ public class Board implements IBoard {
 			for (int i = 0; i<size; i++) {
 					if(orientation == 1) {
 						ligne = grille.get(x+i);
-						ligne.set(y, ship.label);
+						ligne.set(y, s);
 						grille.set(x+i, ligne);
 					}
 					else {
 						ligne = grille.get(x-i);
-						ligne.set(y, ship.label);
+						ligne.set(y, s);
 						grille.set(x-i, ligne);
 					}
 			}
@@ -152,7 +160,7 @@ public class Board implements IBoard {
 
 	@Override
 	public boolean hasShip(int x, int y) {
-		if (grille.get(x).get(y)==".") {
+		if (grille.get(x).get(y).ship.label==".") {
 			return false;
 		}
 		return true;
@@ -162,13 +170,13 @@ public class Board implements IBoard {
 	public void setHit(boolean hit, int x, int y) {
 		ArrayList<Boolean> ligne = new ArrayList<Boolean>();
 		ligne = tirs.get(x);
-		ligne.set(y, true);
+		ligne.set(y, hit);
 		tirs.set(x, ligne);
 	}
 
 	@Override
 	public Boolean getHit(int x, int y) {
-		if (grille.get(x).get(y)==".") {
+		if (grille.get(x).get(y).ship.label==".") {
 			return false;
 		}
 		return true;
