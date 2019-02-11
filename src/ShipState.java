@@ -1,8 +1,8 @@
 
 public class ShipState {
 	//Attributs
-	AbstractShip ship;
-	boolean struck;
+	public AbstractShip ship;
+	public boolean struck;
 	
 	//Constructeur
 	public ShipState() {//Représente une case sans bateau
@@ -18,9 +18,9 @@ public class ShipState {
 	//Méthodes
 	public void addStrike() {
 		this.struck = true;
-		this.ship.addStrike();//Le navire est touché à cet endroit de la grille et on ajoute donc 1 au nombre de frappes subies
-		//On peut ne pas traiter le cas ou le le navire est touché plus de fois que sa longueur qui correspondrait à un joueur peu malin qui
-		//touche un bateau plusieur fois au même endroit ce qui est inutile
+		this.ship.addStrike();/*Le navire est touché à cet endroit de la grille et on ajoute donc 1 au nombre de frappes subies
+								On peut ne pas traiter le cas ou le le navire est touché plus de fois que sa longueur qui correspondrait à un joueur peu malin qui
+								touche un bateau plusieur fois au même endroit ce qui est inutile*/
 	}
 	
 	
@@ -35,6 +35,10 @@ public class ShipState {
 		else {
 			return this.ship.label;
 		}
+	}
+	
+	public AbstractShip ship() {
+		return this.ship;
 	}
 	
 	public boolean isSunk() {

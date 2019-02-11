@@ -64,7 +64,9 @@ public class Board implements IBoard {
 		for (int i = 0; i < grille.size(); i++) {
 			ligne = "" + (i+1) + "\t";
 			for (int j = 0; j < grille.size();j++) {	
-				ligne += grille.get(i).get(j).ship.label+ " ";
+				String label = new String();
+				label = grille.get(i).get(j).toString();
+				ligne += label + " ";
 			}
 			System.out.println(ligne);	
 		}
@@ -160,7 +162,7 @@ public class Board implements IBoard {
 
 	@Override
 	public boolean hasShip(int x, int y) {
-		if (grille.get(x).get(y).ship.label==".") {
+		if (grille.get(x).get(y).ship().label==".") {
 			return false;
 		}
 		return true;
@@ -176,11 +178,49 @@ public class Board implements IBoard {
 
 	@Override
 	public Boolean getHit(int x, int y) {
-		if (grille.get(x).get(y).ship.label==".") {
+		if (grille.get(x).get(y).ship().label==".") {
 			return false;
 		}
 		return true;
 	}
+	
+	public Hit sendHit(int x, int y) {
+		Hit res;
+		ShipState s = new ShipState();
+		s = grille.get(x).get(y);
+		if(s.ship().label != ".") {//Un bateau a été touché
+			res = Hit.STRIKE;
+			s.addStrike();
+			System.out.println("Hit !");
+			if(s.isSunk()) {//Le bateau a été coulé
+				String name = s.ship().getName();
+				if(name == "Carrier") {
+					res = Hit.CARRIER;
+					System.out.println("Carrier Coulé!");
+				}
+				if(name == "Battleship") {
+					res = Hit.BATTLESHIP;
+					System.out.println("Battleship Coulé!");
+				}
+				if(name == "Destroyer") {
+					res = Hit.DESTROYER;
+					System.out.println("Destroyer Coulé!");
+				}
+				if(name == "Submarine") {
+					res = Hit.SUBMARINE;
+					System.out.println("Submarine Coulé!");
+				}
+			}
+			return res;
+		}
+		else {
+			res = Hit.MISS;
+			System.out.println("Coup dans l'eau !");
+			return res;
+		}
+	}
+	
+	
 }
 
 

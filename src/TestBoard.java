@@ -11,7 +11,12 @@ public class TestBoard extends Board {
 		//test.print();
 		AbstractShip ship = new Destroyer(0);
 		test.putShip(ship,5,5);
-		test.setHit(false, 5, 5);
+		test.sendHit(5,5);
+		//System.out.println(test.grille.get(5).get(4).struck);
+		//test.sendHit(5, 6);
+		//test.sendHit(5, 7);
+		//System.out.println(test.hasShip(5, 5));
+		//System.out.println(test.grille.get(5).get(5).ship.strikeCount);
 		test.print();
 	}
 
