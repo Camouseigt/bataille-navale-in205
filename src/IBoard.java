@@ -1,6 +1,6 @@
 public interface IBoard { 
 
-    /**
+	/**
      * Get the size of the grids contained in the Board
      * @return the size of the grids contained in the Board
      */
@@ -45,4 +45,6 @@ public interface IBoard {
     * @return status for the hit (eg : strike or miss)
     */
     Hit sendHit(int x, int y);
+
+	void print();
 }

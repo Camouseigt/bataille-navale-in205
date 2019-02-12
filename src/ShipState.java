@@ -17,10 +17,10 @@ public class ShipState {
 	
 	//Méthodes
 	public void addStrike() {
-		this.struck = true;
-		this.ship.addStrike();/*Le navire est touché à cet endroit de la grille et on ajoute donc 1 au nombre de frappes subies
-								On peut ne pas traiter le cas ou le le navire est touché plus de fois que sa longueur qui correspondrait à un joueur peu malin qui
-								touche un bateau plusieur fois au même endroit ce qui est inutile*/
+		if(!struck) {
+			this.struck = true;
+			this.ship.addStrike();
+		}
 	}
 	
 	

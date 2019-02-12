@@ -53,7 +53,7 @@ public class Player {
             info = board.putShip(s, res.x, res.y);
             if (info == 0) {//Placement du bateau réussi
             	++i;
-            	done = i == 5;
+            	done = (i == 5);
             }
             
             
