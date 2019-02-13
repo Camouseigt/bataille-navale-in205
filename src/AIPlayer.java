@@ -5,7 +5,7 @@ public class AIPlayer extends Player {
     /* **
      * Attribut
      */
-    private BattleShipsAI ai;
+    public BattleShipsAI ai;
 
     /* **
      * Constructeur
@@ -16,4 +16,11 @@ public class AIPlayer extends Player {
     }
 
     // TODO AIPlayer must not inherit "keyboard behavior" from player. Call ai instead.
+    public void putShips() {
+    	ai.putShips(ships);
+    }
+    
+    public Hit sendHit(int[] coords) {
+    	return ai.sendHit(coords);
+    }
 }

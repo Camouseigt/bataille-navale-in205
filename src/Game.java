@@ -8,13 +8,16 @@ public class Game {
     /* ***
      * Constante
      */
+	int size_grille = 10;
     public static final File SAVE_FILE = new File("savegame.dat");
 
+
+	
     /* ***
      * Attributs
      */
     private Player player1;
-    private Player player2;
+    private AIPlayer player2;
     private Scanner sin;
 
     /* ***
@@ -23,20 +26,31 @@ public class Game {
     public Game() {}
 
     public Game init() {
-        if (!loadSave()) {
+        if (true /*!loadSave()*/) {
             // init attributes
+        	List<AbstractShip> player1Ships = createDefaultShips();
+            List<AbstractShip> player2Ships = createDefaultShips();
             System.out.println("entre ton nom:");
-
+            
             // TODO use a scanner to read player name
+            Scanner scanner = new Scanner(System.in);
+            String username = scanner.nextLine();
+            System.out.println("Votre nom est : " + username);
 
             // TODO init boards
-            Board b1, b2;
-
+            Board b1 = new Board(username,size_grille);
+            Board b2 = new Board("AI board",size_grille);
+            
+            
             // TODO init this.player1 & this.player2
-
+            player1 = new Player(b1,b2,player1Ships);
+            player2 = new AIPlayer(b2,b1,player2Ships);
             b1.print();
+          
+            
             // place player ships
             player1.putShips();
+            sleep(5000);
             player2.putShips();
         }
         return this;
@@ -46,26 +60,46 @@ public class Game {
      * Méthodes
      */
     public void run() {
+    	
         int[] coords = new int[2];
         Board b1 = player1.board;
         Hit hit;
-
-        // main loop
-        b1.print();
         boolean done;
+        // main loop
+        
+        
         do {
-            hit = Hit.MISS; // TODO player1 send a hit
-            boolean strike = hit != Hit.MISS; // TODO set this hit on his board (b1)
+        	System.out.println(b1.name);
+        	b1.print();
+        	
+        	// TODO player1 send a hit
+            hit = player1.sendHit(coords);
+            
+            
+            // TODO set this hit on his board (b1)
+            //On modifie la grille tirs du joueur pour enregistrer son tir
+            if(hit == Hit.MISS) {
+            	b1.setHit(false,hit.coords.x, hit.coords.y);
+            }
+            if(hit == null) {
+            	//On passe
+            }
+            else {
+            	b1.setHit(true,hit.coords.x, hit.coords.y);
 
+            }
+            boolean strike = hit != Hit.MISS; 
             done = updateScore();
             b1.print();
             System.out.println(makeHitMessage(false /* outgoing hit */, coords, hit));
 
-            save();
+            
+            //save();
 
             if (!done && !strike) {
                 do {
-                    hit = Hit.MISS; // TODO player2 send a hit.
+                	// TODO player2 send a hit.
+                	hit = player2.sendHit(player2.ai.pickRandomCoord()); 
 
                     strike = hit != Hit.MISS;
                     if (strike) {
@@ -75,7 +109,7 @@ public class Game {
                     done = updateScore();
 
                     if (!done) {
-                        save();
+                        //save();
                     }
                 } while(strike && !done);
             }
@@ -89,23 +123,29 @@ public class Game {
 
 
     private void save() {
-        try {
-            // TODO bonus 2 : uncomment
-            //  if (!SAVE_FILE.exists()) {
-            //      SAVE_FILE.getAbsoluteFile().getParentFile().mkdirs();
-            //  }
-
-            // TODO bonus 2 : serialize players
-
+    	try {
+            FileOutputStream out = new FileOutputStream(SAVE_FILE);
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(player1);
+            oout.writeObject(player2);
+            oout.flush();
+            oout.close();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private boolean loadSave() {
         if (SAVE_FILE.exists()) {
             try {
-                // TODO bonus 2 : deserialize players
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SAVE_FILE));
+
+                player1 = (Player) ois.readObject();
+                player2 = (Player) ois.readObject();
+
+                ois.close();
 
                 return true;
             } catch (IOException | ClassNotFoundException e) {
@@ -140,7 +180,7 @@ public class Game {
             case MISS:
                 msg = hit.toString();
                 break;
-            case STIKE:
+            case STRIKE:
                 msg = hit.toString();
                 color = ColorUtil.Color.RED;
                 break;
@@ -155,10 +195,18 @@ public class Game {
     }
 
     private static List<AbstractShip> createDefaultShips() {
-        return Arrays.asList(new AbstractShip[]{new Destroyer(), new Submarine(), new Submarine(), new BattleShip(), new Carrier()});
+        return Arrays.asList(new AbstractShip[]{new Destroyer(), new Submarine(), new Submarine(), new Battleship(), new Carrier()});
     }
 
     public static void main(String args[]) {
         new Game().init().run();
     }
+    
+    private static void sleep(int ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException e) {
+				e.printStackTrace();
+		}
+	}
 }

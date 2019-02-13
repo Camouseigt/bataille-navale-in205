@@ -36,6 +36,7 @@ public class Player {
             String msg = String.format("placer %d : %s(%d)", i + 1, s.getName(), s.getLength());
             System.out.println(msg);
             InputHelper.ShipInput res = InputHelper.readShipInput();
+            
             // TODO set ship orientation
             if (res.orientation == "e") {
             	s.orientation = 0;
@@ -50,28 +51,33 @@ public class Player {
             	s.orientation = 3;
             }
             
-            info = board.putShip(s, res.x, res.y);
+            info = board.putShip(s, res.y, res.x);
             if (info == 0) {//Placement du bateau réussi
             	++i;
             	done = (i == 5);
             }
             
-            
+            sleep(2000);
             board.print();
         } while (!done);
     }
 
     public Hit sendHit(int[] coords) {
-        boolean done;
+        boolean done = true;
         Hit hit = null;
 
         do {
             System.out.println("où frapper?");
             InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
             // TODO call sendHit on this.opponentBoard
-            this.opponentBoard.sendHit(hitInput.x, hitInput.y);
+            if (!(hitInput.x<=0 || hitInput.y<=0 || hitInput.x>10 || hitInput.y>10)) {
+            	//Le tir est valide
+            	hit = this.opponentBoard.sendHit(hitInput.x, hitInput.y);
+            }
             
+
             // TODO : Game expects sendHit to return BOTH hit result & hit coords.
+            hit.coords = hitInput;
             // return hit is obvious. But how to return coords at the same time ?
         } while (!done);
 
@@ -85,4 +91,12 @@ public class Player {
     public void setShips(AbstractShip[] ships) {
         this.ships = ships;
     }
+    
+    private static void sleep(int ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException e) {
+				e.printStackTrace();
+		}
+	}
 }

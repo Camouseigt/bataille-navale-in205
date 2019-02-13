@@ -11,7 +11,7 @@ public class TestGame {
 		BattleShipsAI ai = new BattleShipsAI(test,test);
 		//ai.putShips(ships);
 		ai.board.putShip(ship1, 0, 0);
-		
+		ai.board.putShip(ship2, 2, 0);
 		
 		//ai.board.print();
 		//ai.opponent.print();
@@ -30,7 +30,7 @@ public class TestGame {
 		sleep(100);
 		
 		
-		while(countDestroyedShip !=1){
+		while(countDestroyedShip !=2){
 			coords = ai.pickRandomCoord();
 			res = ai.sendHit(coords);
 			if(res == Hit.MISS) {

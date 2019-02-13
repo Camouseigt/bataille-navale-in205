@@ -13,7 +13,7 @@ public enum Hit {
      */
     private int value;
     private String label;
-
+    public InputHelper.CoordInput coords;
     /* ***
      * Constructeur
      */
