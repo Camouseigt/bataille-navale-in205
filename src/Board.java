@@ -173,7 +173,7 @@ public class Board implements IBoard {
 
 	@Override
 	public Boolean getHit(int x, int y) {
-		if (grille[x][y].ship().label==".") {
+		if (tirs[x][y]==null) {
 			return false;
 		}
 		return true;
@@ -186,6 +186,7 @@ public class Board implements IBoard {
 		if(s.ship().label != ".") {//Un bateau a été touché
 			res = Hit.STRIKE;
 			s.addStrike();
+			System.out.println("Hit !");
 			if(s.isSunk()) {//Le bateau a été coulé
 				String name = s.ship().getName();
 				if(name == "Carrier") {

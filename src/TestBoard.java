@@ -11,13 +11,13 @@ public class TestBoard extends Board {
 		//test.print();
 		AbstractShip ship = new Destroyer(2);
 		test.putShip(ship,2,2);
-		ship = new Carrier(1);
+		ship = new Carrier(3);
 		test.putShip(ship,1,5);
-		test.sendHit(5,5);
+		/*test.sendHit(5,5);
 		test.sendHit(4,5);
 		test.sendHit(3,5);
 		test.sendHit(2,5);
-		test.sendHit(1,5);		
+		test.sendHit(1,5);	*/	
 		test.print();
 	}
 

@@ -5,24 +5,48 @@ public class TestGame {
 		Board test = new Board("test",10);
 		AbstractShip ship1 = new Destroyer(0);
 		AbstractShip ship2 = new Carrier(1);
-		
-		test.putShip(ship1, 5, 5);
-		test.putShip(ship2, 5, 4);
-		test.print();
-		
-		
+		AbstractShip[] ships = new AbstractShip[2];
+		ships[0] = ship1;
+		ships[1] = ship2;
 		BattleShipsAI ai = new BattleShipsAI(test,test);
+		//ai.putShips(ships);
+		ai.board.putShip(ship1, 0, 0);
 		
 		
+		//ai.board.print();
+		//ai.opponent.print();
+		
+		Hit res;
 		int countDestroyedShip = 0;
 		int[] coords = new int[2];
-		while(countDestroyedShip !=2){
-			coords = ai.pickRandomCoord();
-			ai.sendHit(coords);
-			ai.board.print();
-			sleep(200);
+		res = ai.board.sendHit(0, 0);
+		if(res == Hit.MISS) {
+			ai.board.setHit(false,coords[0],coords[1]);
 		}
-		System.out.println("Test 1");
+		else {
+			ai.board.setHit(true,coords[0],coords[1]);
+		}
+		ai.board.print();
+		sleep(100);
+		
+		
+		while(countDestroyedShip !=1){
+			coords = ai.pickRandomCoord();
+			res = ai.sendHit(coords);
+			if(res == Hit.MISS) {
+				ai.board.setHit(false,coords[0],coords[1]);
+				ai.board.print();
+			}
+			else {
+				if(res != Hit.STRIKE) {
+					countDestroyedShip++;
+				}
+				ai.board.setHit(true,coords[0],coords[1]);
+				ai.board.print();
+			}
+			sleep(100);
+		}
+		System.out.println("Partie terminée");
 	}
 	
 	private static void sleep(int ms) {

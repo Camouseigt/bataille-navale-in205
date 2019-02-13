@@ -15,12 +15,12 @@ public class BattleShipsAI implements Serializable {
     /**
      * My board. My ships have to be put on this one.
      */
-    public final IBoard board;
+    private final IBoard board;
 
     /**
      * My opponent's board. My hits go on this one to strike his ships.
      */
-    public final IBoard opponent;
+    private final IBoard opponent;
 
     /**
      * Coords of last known strike. Would be a good idea to target next hits around this point.
@@ -56,32 +56,19 @@ public class BattleShipsAI implements Serializable {
      * @param ships the ships to put
      */
     public void putShips(AbstractShip ships[]) {
-        int x, y, o;
-        int canPutShip=-1;
+        int x, y;
+        AbstractShip.Orientation o;
         Random rnd = new Random();
+        AbstractShip.Orientation[] orientations = AbstractShip.Orientation.values();
 
         for (AbstractShip s : ships) {
             do {
-            	x = rnd.nextInt(board.getSize());
-            	y = rnd.nextInt(board.getSize());
-            	o = rnd.nextInt(4);
-            	s.orientation = o;
-            	//On verifie si on peut placer les bateaux
-            	canPutShip = board.putShip(s, x, y);
-            } while(canPutShip!=0);
-            
+                // TODO use Random to pick a random x, y & orientation
+            } while(!canPutShip(s, x, y));
+            board.putShip(s, x, y);
         }
     }
-    
-    
-    
-    public void playerPrint() {
-    	this.board.print();
-    }
-    
-    public void opponentPrint() {
-    	this.opponent.print();
-    }
+
     /**
      *
      * @param coords array must be of size 2. Will hold the coord of the send hit.
@@ -141,7 +128,7 @@ public class BattleShipsAI implements Serializable {
     /* ***
      * Méthodes privées
      */
-    /*
+
     private boolean canPutShip(AbstractShip ship, int x, int y) {
         AbstractShip.Orientation o = ship.getOrientation();
         int dx = 0, dy = 0;
@@ -179,17 +166,17 @@ public class BattleShipsAI implements Serializable {
         }
 
         return true;
-    }*/
+    }
 
     private boolean guessOrientation(int[] c1, int[] c2) {
         return c1[0] == c2[0];
     }
 
     private boolean isUndiscovered(int x, int y) {
-        return x >= 0 && x < size && y >= 0 && y < size && board.getHit(x, y) == false;
+        return x >= 0 && x < size && y >= 0 && y < size && board.getHit(x, y) == null;
     }
 
-    public int[] pickRandomCoord() {
+    private int[] pickRandomCoord() {
         Random rnd = new Random();
         int x;
         int y;
